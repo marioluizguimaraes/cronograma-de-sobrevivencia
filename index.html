@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Estudos - Detran/IPERN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        .task-row { transition: all 0.2s ease; }
+        .task-text { transition: all 0.2s ease; }
+        .theme-btn { transition: transform 0.2s ease, background-color 0.3s ease; }
+        .theme-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm dark:shadow-lg border border-slate-200 dark:border-slate-700 transition-colors">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 dark:from-blue-400 dark:to-purple-500 bg-clip-text text-transparent">
+                    Missão: Aprovação Detran/IPERN
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2 font-medium">
+                    <i class="ph-fill ph-target text-slate-400 dark:text-slate-400"></i> Foco: Bloco 1 (Administrativo) | Regra 80/20
+                </p>
+            </div>
+            
+            <div class="mt-4 md:mt-0 flex items-center gap-4">
+                <button onclick="toggleTheme()" class="theme-btn p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 shadow-sm flex items-center justify-center" title="Alternar Modo Claro/Escuro">
+                    <i id="theme-icon" class="ph-fill ph-moon text-xl text-slate-700 dark:text-amber-400"></i>
+                </button>
+                <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-w-[120px] transition-colors">
+                    <span id="days-left" class="text-3xl font-bold text-blue-500 dark:text-blue-400">0</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1 font-semibold">Dias Restantes</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm dark:shadow-lg border border-slate-200 dark:border-slate-700 transition-colors">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2 text-slate-800 dark:text-slate-100">
+                        <i class="ph-fill ph-target text-blue-500 dark:text-blue-400 text-xl"></i> Progresso da Semana
+                    </h3>
+                    <span id="progress-text" class="text-2xl font-bold text-slate-700 dark:text-slate-200">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-900 rounded-full h-3 border border-slate-200/50 dark:border-none">
+                    <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center font-medium">Reinicia automaticamente ao domingo</p>
+            </div>
+
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm dark:shadow-lg border border-slate-200 dark:border-slate-700 md:col-span-2 flex flex-col justify-center transition-colors">
+            <h3 class="text-lg font-semibold mb-3 flex items-center gap-2 text-slate-800 dark:text-slate-100">
+                <i class="ph-fill ph-warning-circle text-orange-500 dark:text-orange-400 text-xl"></i> Distribuição de Pontos (Prioridades)
+            </h3>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                    <span class="w-16 text-xs text-slate-500 dark:text-slate-400 font-semibold">Peso 2</span>
+                    <div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-full h-4 overflow-hidden flex border border-slate-200/50 dark:border-none">
+                        <div class="bg-blue-500 h-full w-[20%]" title="Legislação de Trânsito"></div>
+                        <div class="bg-purple-500 h-full w-[17%]" title="Administração"></div>
+                        <div class="bg-indigo-500 h-full w-[14%]" title="Dir. Const/Admin"></div>
+                        <div class="bg-pink-500 h-full w-[14%]" title="Legislação RN"></div>
+                        <div class="bg-rose-500 h-full w-[14%]" title="Dir. Previdenciário"></div>
+                    </div>
+                    <span class="text-sm font-bold w-12 text-right text-slate-700 dark:text-slate-200">110 pts</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="w-16 text-xs text-slate-500 dark:text-slate-400 font-semibold">Peso 1</span>
+                    <div class="flex-1 bg-slate-100 dark:bg-slate-900 rounded-full h-4 overflow-hidden flex border border-slate-200/50 dark:border-none">
+                        <div class="bg-slate-400 dark:bg-slate-500 h-full w-[11%]" title="Português"></div>
+                        <div class="bg-slate-500 dark:bg-slate-600 h-full w-[7%]" title="Hist/Geo RN"></div>
+                        <div class="bg-slate-600 dark:bg-slate-700 h-full w-[3%]" title="Ética"></div>
+                    </div>
+                    <span class="text-sm font-bold w-12 text-right text-slate-700 dark:text-slate-200">30 pts</span>
+                </div>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Cores representam as disciplinas específicas. Foco total nelas!</p>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-bold mt-8 mb-4 flex items-center gap-2 text-slate-800 dark:text-slate-100">
+        <i class="ph-fill ph-calendar text-blue-500 dark:text-blue-400 text-2xl"></i> Cronograma de Sobrevivência
+    </h2>
+    
+    <div id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    </div>
+
+</div>
+
+<script>
+    function initTheme() {
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            updateThemeIcon('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateThemeIcon('light');
+        }
+    }
+
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            updateThemeIcon('light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            updateThemeIcon('dark');
+        }
+    }
+
+    function updateThemeIcon(mode) {
+        const icon = document.getElementById('theme-icon');
+        if (!icon) return;
+        if (mode === 'dark') {
+            icon.className = 'ph-fill ph-sun text-xl text-amber-400';
+        } else {
+            icon.className = 'ph-fill ph-moon text-xl text-slate-600';
+        }
+    }
+
+    initTheme();
+
+    const schedule = [
+        { day: 'Segunda-feira', main: { title: 'Legislação de Trânsito (CTB)', time: '1h00' }, secondary: { title: 'Questões de Português', time: '30m' }, exercise: { title: 'Academia', time: '1h30' }, home: 'Mercado / Preparar marmitas', icon: 'ph-book-open', color: 'text-blue-500 dark:text-blue-400' },
+        { day: 'Terça-feira', main: { title: 'Administração', time: '1h00' }, secondary: { title: 'Leitura Const. do RN', time: '30m' }, exercise: { title: 'Academia', time: '1h30' }, home: 'Limpeza básica (loiça/chão)', icon: 'ph-target', color: 'text-purple-500 dark:text-purple-400' },
+        { day: 'Quarta-feira', main: { title: 'Dir. Const. e Administrativo', time: '1h00' }, secondary: { title: 'Questões de Ética', time: '30m' }, exercise: { title: 'Academia', time: '1h30' }, home: 'Lavar a roupa', icon: 'ph-book-open', color: 'text-blue-500 dark:text-blue-400' },
+        { day: 'Quinta-feira', main: { title: 'Direito Previdenciário', time: '1h00' }, secondary: { title: 'Revisão História/Geo RN', time: '30m' }, home: 'Organização geral da casa', icon: 'ph-target', color: 'text-purple-500 dark:text-purple-400' },
+        { day: 'Sexta-feira', main: { title: 'Legislação de Trânsito (CTB)', time: '1h00' }, secondary: { title: 'Leitura Estatuto Servidores', time: '30m' }, exercise: { title: 'Academia', time: '1h30' }, home: 'Descanso mental merecido', icon: 'ph-coffee', color: 'text-green-500 dark:text-green-400' },
+        { day: 'Sábado', main: { title: 'Admin. + Previdenciário', time: '2h00' }, secondary: { title: 'Correção de Erros', time: '1h00' }, exercise: { title: 'Academia', time: '1h30' }, home: 'Faxina pesada / Trabalhos TADS', icon: 'ph-warning-circle', color: 'text-orange-500 dark:text-orange-400', special: true },
+        { day: 'Domingo', main: { title: 'Simulado (Provas Ant.)', time: '2h00' }, secondary: { title: 'Análise Desempenho', time: '1h00' }, home: 'Descanso absoluto / Lazer', icon: 'ph-trophy', color: 'text-yellow-500 dark:text-yellow-400', special: true }
+    ];
+
+    function parseTime(timeStr) {
+        if (!timeStr) return 0;
+        let mins = 0;
+        const hMatch = timeStr.match(/(\d+)h/);
+        const mMatch = timeStr.match(/(\d+)m/);
+        if (hMatch) mins += parseInt(hMatch[1]) * 60;
+        if (mMatch) mins += parseInt(mMatch[1]);
+        return mins;
+    }
+
+    function formatTime(mins) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (h > 0 && m > 0) return `${h}h${m.toString().padStart(2, '0')}`;
+        if (h > 0) return `${h}h00`;
+        return `${m}m`;
+    }
+
+    let totalTasksCompleted = 0;
+    let totalTasks = 0;
+        
+    schedule.forEach(day => {
+        totalTasks += 3; // Principal, Secundária e Casa
+        if (day.exercise) totalTasks += 1; // Soma +1 nos dias de treino
+    });
+
+    function calculateDaysLeft() {
+        const examDate = new Date('2026-05-31T00:00:00');
+        const today = new Date();
+        const diffTime = Math.abs(examDate - today);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('days-left').textContent = diffDays;
+    }
+
+    function updateProgress() {
+        const percentage = Math.round((totalTasksCompleted / totalTasks) * 100) || 0;
+        document.getElementById('progress-text').textContent = percentage + '%';
+        document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    function setTaskState(element, isCompleted) {
+        const icon = element.querySelector('.task-icon');
+        const text = element.querySelector('.task-text');
+        
+        const baseIconColor = element.getAttribute('data-icon-color'); 
+        const baseIconColorDark = element.getAttribute('data-icon-color-dark');
+        const baseTextColor = element.getAttribute('data-text-color');
+        const baseTextColorDark = element.getAttribute('data-text-color-dark');
+
+        element.setAttribute('data-completed', isCompleted ? 'true' : 'false');
+
+        if (isCompleted) {
+            icon.className = `task-icon ph-fill ph-check-circle text-green-500 dark:text-green-400 text-xl`;
+            text.className = `task-text text-sm mt-0.5 text-slate-400 dark:text-slate-500 line-through`;
+        } else {
+            icon.className = `task-icon ph ph-circle text-slate-400 dark:text-slate-500 text-xl group-hover:${baseIconColor} dark:group-hover:${baseIconColorDark}`;
+            text.className = `task-text text-sm mt-0.5 ${baseTextColor} ${baseTextColorDark}`;
+        }
+    }
+
+    function toggleTask(element) {
+        const isCompleted = element.getAttribute('data-completed') === 'true';
+        const taskId = element.getAttribute('data-task-id');
+        const newState = !isCompleted;
+        
+        setTaskState(element, newState);
+        localStorage.setItem(taskId, newState ? 'true' : 'false');
+        
+        if (newState) {
+            totalTasksCompleted++;
+        } else {
+            totalTasksCompleted--;
+        }
+        
+        updateProgress();
+    }
+
+    function checkAndResetWeekly() {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 é Domingo, 1 é Segunda...
+        
+        const lastSunday = new Date(now);
+        lastSunday.setDate(now.getDate() - dayOfWeek);
+        lastSunday.setHours(0, 0, 0, 0);
+        
+        const lastSundayStr = lastSunday.getTime().toString();
+        const savedSunday = localStorage.getItem('lastResetSunday');
+
+        if (savedSunday !== lastSundayStr) {
+            schedule.forEach(dayPlan => {
+                localStorage.removeItem(`${dayPlan.day}-main`);
+                localStorage.removeItem(`${dayPlan.day}-secondary`);
+                if (dayPlan.exercise) localStorage.removeItem(`${dayPlan.day}-exercise`);
+                localStorage.removeItem(`${dayPlan.day}-home`);
+            });
+            localStorage.setItem('lastResetSunday', lastSundayStr);
+        }
+    }
+
+    function loadSavedProgress() {
+        totalTasksCompleted = 0;
+        const tasks = document.querySelectorAll('.task-row');
+        
+        tasks.forEach(task => {
+            const taskId = task.getAttribute('data-task-id');
+            const isSavedCompleted = localStorage.getItem(taskId) === 'true';
+            
+            setTaskState(task, isSavedCompleted);
+            
+            if (isSavedCompleted) {
+                totalTasksCompleted++;
+            }
+        });
+        updateProgress();
+    }
+
+    function renderSchedule() {
+        const grid = document.getElementById('schedule-grid');
+        
+        schedule.forEach(dayPlan => {
+            const borderClass = dayPlan.special 
+                ? 'border-purple-200 bg-purple-50/50 dark:border-purple-500/30 dark:bg-slate-800/80' 
+                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800';
+            
+            let totalMins = parseTime(dayPlan.main.time) + parseTime(dayPlan.secondary.time);
+            if (dayPlan.exercise) totalMins += parseTime(dayPlan.exercise.time);
+            const totalTimeStr = formatTime(totalMins);
+
+            let exerciseHtml = '';
+            if (dayPlan.exercise) {
+                exerciseHtml = `
+                    <div class="flex items-start gap-3 cursor-pointer group pt-2 border-t border-slate-100 dark:border-slate-700/50 task-row" 
+                         data-task-id="${dayPlan.day}-exercise"
+                         data-completed="false" 
+                         data-icon-color="text-teal-500" data-icon-color-dark="text-teal-400"
+                         data-text-color="text-slate-700" data-text-color-dark="dark:text-slate-200"
+                         onclick="toggleTask(this)">
+                        <button class="mt-1 flex-shrink-0 focus:outline-none">
+                            <i class="task-icon ph ph-circle text-slate-400 dark:text-slate-500 text-xl group-hover:text-teal-500 dark:group-hover:text-teal-400"></i>
+                        </button>
+                        <div>
+                            <span class="text-xs font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Saúde (${dayPlan.exercise.time})</span>
+                            <p class="task-text text-sm mt-0.5 text-slate-700 dark:text-slate-200">${dayPlan.exercise.title}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const card = document.createElement('div');
+            card.className = `rounded-2xl p-5 border shadow-sm dark:shadow-none hover:shadow-md ${borderClass} hover:border-blue-400 dark:hover:border-blue-500/50 transition-all duration-300 flex flex-col h-full`;
+            
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ${dayPlan.icon} ${dayPlan.color} text-xl"></i>
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">${dayPlan.day}</h3>
+                    </div>
+                    <span class="text-xs font-bold bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md flex items-center gap-1 border border-slate-200 dark:border-slate-600" title="Tempo total do dia">
+                        <i class="ph ph-clock"></i> ${totalTimeStr}
+                    </span>
+                </div>
+                <div class="flex-1 space-y-4">
+                    
+                    <div class="flex items-start gap-3 cursor-pointer group task-row" 
+                         data-task-id="${dayPlan.day}-main"
+                         data-completed="false" 
+                         data-icon-color="text-blue-500" data-icon-color-dark="text-blue-400"
+                         data-text-color="text-slate-800" data-text-color-dark="dark:text-slate-200"
+                         onclick="toggleTask(this)">
+                        <button class="mt-1 flex-shrink-0 focus:outline-none">
+                            <i class="task-icon ph ph-circle text-slate-400 dark:text-slate-500 text-xl group-hover:text-blue-500 dark:group-hover:text-blue-400"></i>
+                        </button>
+                        <div>
+                            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Peso 2 (${dayPlan.main.time})</span>
+                            <p class="task-text text-sm mt-0.5 text-slate-800 dark:text-slate-200 font-medium">${dayPlan.main.title}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 cursor-pointer group task-row" 
+                         data-task-id="${dayPlan.day}-secondary"
+                         data-completed="false" 
+                         data-icon-color="text-purple-500" data-icon-color-dark="text-purple-400"
+                         data-text-color="text-slate-600" data-text-color-dark="dark:text-slate-300"
+                         onclick="toggleTask(this)">
+                        <button class="mt-1 flex-shrink-0 focus:outline-none">
+                            <i class="task-icon ph ph-circle text-slate-400 dark:text-slate-500 text-xl group-hover:text-purple-500 dark:group-hover:text-purple-400"></i>
+                        </button>
+                        <div>
+                            <span class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Apoio (${dayPlan.secondary.time})</span>
+                            <p class="task-text text-sm mt-0.5 text-slate-600 dark:text-slate-300">${dayPlan.secondary.title}</p>
+                        </div>
+                    </div>
+
+                    ${exerciseHtml}
+
+                    <div class="flex items-start gap-3 cursor-pointer group pt-2 border-t border-slate-100 dark:border-slate-700/50 task-row" 
+                         data-task-id="${dayPlan.day}-home"
+                         data-completed="false" 
+                         data-icon-color="text-orange-500" data-icon-color-dark="text-orange-400"
+                         data-text-color="text-slate-500" data-text-color-dark="dark:text-slate-400"
+                         onclick="toggleTask(this)">
+                        <button class="mt-1 flex-shrink-0 focus:outline-none">
+                            <i class="task-icon ph ph-circle text-slate-400 dark:text-slate-500 text-xl group-hover:text-orange-500 dark:group-hover:text-orange-400"></i>
+                        </button>
+                        <div>
+                            <span class="text-xs font-semibold text-orange-500 dark:text-orange-400 uppercase tracking-wider">Casa / TADS</span>
+                            <p class="task-text text-sm mt-0.5 text-slate-500 dark:text-slate-400">${dayPlan.home}</p>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateDaysLeft();
+        checkAndResetWeekly(); // Verifica se é hora de limpar (Domingo)
+        renderSchedule();
+        loadSavedProgress();   // Aplica as marcações guardadas no LocalStorage
+    });
+</script>
+</body>
+</html>
